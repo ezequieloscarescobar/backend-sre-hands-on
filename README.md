@@ -1,12 +1,26 @@
-# streaming-service — Contexto de Negocio
+# backend-sre-hands-on
 
-## ¿Qué hace este servicio?
+> **Este repositorio forma parte del proceso de onboarding de nuevos ingenieros SRE.**
+> Es utilizado en el hands-on práctico para que los participantes ejerciten observabilidad,
+> diagnóstico de fallas y mejores prácticas SRE sobre un servicio real simulado.
+
+## Stack
+
+- Java 21 / Spring Boot 3.2.5
+- H2 (base de datos en memoria)
+- Maven
+
+---
+
+## streaming-service — Contexto de Negocio
+
+### ¿Qué hace este servicio?
 
 El `streaming-service` es el microservicio central de MeliPlay. Gestiona el inicio,
 la continuación y la finalización de reproducciones de películas, series y episodios
 bajo un modelo de suscripción.
 
-## Flujo de una reproducción
+### Flujo de una reproducción
 
 Antes de iniciar una reproducción, el servicio:
 1. Verifica que el usuario tenga suscripción activa (vía `subscription-service`).
@@ -14,7 +28,7 @@ Antes de iniciar una reproducción, el servicio:
 3. Registra la sesión.
 4. Notifica el inicio al `notification-service` (fire-and-forget).
 
-## Estados de una sesión
+### Estados de una sesión
 
 ```
 INITIATED → IN_PROGRESS → COMPLETED
@@ -23,7 +37,7 @@ INITIATED → IN_PROGRESS → COMPLETED
          (desde cualquier estado) → FAILED
 ```
 
-## Reglas de negocio
+### Reglas de negocio
 
 - Sin suscripción activa: no se puede reproducir.
 - Plan BASIC: máximo 1 pantalla simultánea.
@@ -31,13 +45,13 @@ INITIATED → IN_PROGRESS → COMPLETED
 - Plan PREMIUM: máximo 4 pantallas simultáneas.
 - El contenido debe estar disponible en la región del usuario.
 
-## Interacciones con otros servicios
+### Interacciones con otros servicios
 
 - **subscription-service**: consultado en cada intento de reproducción.
 - **catalog-service**: consultado para validar disponibilidad del contenido.
 - **notification-service**: notificado tras cada inicio exitoso (no bloquea).
 
-## Cómo correr el servicio
+### Cómo correr el servicio
 
 ```bash
 mvn spring-boot:run
@@ -46,7 +60,7 @@ mvn spring-boot:run
 La aplicación levanta en `http://localhost:8080`.
 No requiere ningún backend externo: los servicios dependientes están simulados internamente.
 
-## Usuarios de prueba
+### Usuarios de prueba
 
 | userId | Plan | Estado |
 |---|---|---|
@@ -56,7 +70,7 @@ No requiere ningún backend externo: los servicios dependientes están simulados
 | `slow_user1` | PREMIUM | Activo (latencia alta simulada) |
 | `user123` | STANDARD | Activo |
 
-## Contenidos de prueba
+### Contenidos de prueba
 
 | contentId | Disponibilidad | Calidades |
 |---|---|---|
